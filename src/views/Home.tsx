@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
-import { PostFormDataType, PostType } from '../types';
+import { PostFormDataType, PostType, UserType } from '../types';
 import { getAllPosts } from '../lib/apiWrapper';
 
 
@@ -19,10 +19,10 @@ type Sorting = {
 
 type HomeProps = {
     isLoggedIn: boolean,
-    handleClick: () => void
+    currentUser: UserType|null,
 }
 
-export default function Home({isLoggedIn, handleClick}: HomeProps) {
+export default function Home({isLoggedIn, currentUser}: HomeProps) {
 
     const [showForm, setShowForm] = useState(false);
     const [posts, setPosts] = useState<PostType[]>([])
@@ -67,28 +67,26 @@ export default function Home({isLoggedIn, handleClick}: HomeProps) {
 
     return (
         <>
-            <h1>Hello World</h1>
-                <Button variant='primary' onClick={handleClick}>Click Me!</Button>
-                <h2>{isLoggedIn ? `Welcome Back` : 'Please Log In or Sign Up'}</h2>
-                <Row>
-                    <Col xs={12} md={6}>
-                        <Form.Control value={searchTerm} placeholder='Search Posts' onChange={handleInputChange} />
-                    </Col>
-                    <Col>
-                        <Form.Select onChange={handleSelectChange}>
-                            <option>Choose Sorting Option</option>
-                            <option value="idAsc">Sort By ID ASC</option>
-                            <option value="idDesc">Sort By ID DESC</option>
-                            <option value="titleAsc">Sort By Title ASC</option>
-                            <option value="titleDesc">Sort By Title DESC</option>
-                        </Form.Select>
-                    </Col>
-                    <Col>
-                        <Button className='w-100' variant='success' onClick={() => setShowForm(!showForm)}>{showForm ? 'Hide Form' : 'Add Post+'}</Button>
-                    </Col>
-                </Row>
-                { showForm && <PostForm addNewPost={addNewPost} /> }
-                {posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map( p => <PostCard key={p.id} post={p} /> )}
+            <h1 className="text-center">{isLoggedIn ? `Hello ${currentUser?.firstName} ${currentUser?.lastName}` : 'Welcome to the Blog' }</h1>
+            <Row>
+                <Col xs={12} md={6}>
+                    <Form.Control value={searchTerm} placeholder='Search Posts' onChange={handleInputChange} />
+                </Col>
+                <Col>
+                    <Form.Select onChange={handleSelectChange}>
+                        <option>Choose Sorting Option</option>
+                        <option value="idAsc">Sort By ID ASC</option>
+                        <option value="idDesc">Sort By ID DESC</option>
+                        <option value="titleAsc">Sort By Title ASC</option>
+                        <option value="titleDesc">Sort By Title DESC</option>
+                    </Form.Select>
+                </Col>
+                <Col>
+                    <Button className='w-100' variant='success' onClick={() => setShowForm(!showForm)}>{showForm ? 'Hide Form' : 'Add Post+'}</Button>
+                </Col>
+            </Row>
+            { showForm && <PostForm addNewPost={addNewPost} /> }
+            {posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map( p => <PostCard key={p.id} post={p} /> )}
         </>
     )
 }
