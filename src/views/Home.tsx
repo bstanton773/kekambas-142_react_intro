@@ -28,7 +28,6 @@ export default function Home({isLoggedIn, handleClick}: HomeProps) {
     const [posts, setPosts] = useState<PostType[]>([])
 
     useEffect(() => {
-        console.log('Hello World')
         async function fetchData(){
             const response = await getAllPosts();
             if (response.data){
